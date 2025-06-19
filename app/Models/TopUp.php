@@ -9,14 +9,8 @@ class TopUp extends Model
 {
     use HasFactory;
 
-    // Mirip seperti Transaction, kita matikan timestamp otomatis
     public $timestamps = false;
     
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'user_id',
         'nominal',
@@ -26,11 +20,11 @@ class TopUp extends Model
     ];
 
     /**
-     * Mendefinisikan relasi ke tabel 'users'
-     * Satu TopUp hanya dimiliki oleh satu User
+     * Mendefinisikan relasi ke model User.
+     * Sebuah TopUp dimiliki oleh satu User.
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

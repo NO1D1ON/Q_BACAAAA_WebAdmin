@@ -27,7 +27,7 @@
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($topUps as $topUp)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $topUp->user->name ?? 'N/A' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $topUp->user->nama ?? 'N/A' }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($topUp->nominal, 0, ',', '.') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $topUp->waktu_permintaan_topup }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

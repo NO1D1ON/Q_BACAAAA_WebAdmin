@@ -27,6 +27,7 @@
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</th>
+                                <th class="px-6 py-3 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gambar</th>
                                 <th scope="col" class="relative px-6 py-3">
                                     <span class="sr-only">Edit</span>
                                 </th>
@@ -38,6 +39,13 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $loop->iteration }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $category->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $category->slug }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($category->image_path)
+                                            <img src="{{ asset('storage/' . $category->image_path) }}" alt="{{ $category->name }}" class="h-10 w-16 object-cover rounded">
+                                        @else
+                                            <span class="text-xs text-gray-500">No Image</span>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <a href="{{ route('categories.edit', $category->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                         <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="inline">

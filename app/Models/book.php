@@ -15,6 +15,7 @@ class Book extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'title',
         'category_id',
         'penulis',
         'deskripsi',
@@ -22,6 +23,11 @@ class Book extends Model
         'harga',
         'rating',
         'file_path',
+    ];
+
+    protected $casts = [
+        'harga' => 'decimal:2',
+        'rating' => 'float',
     ];
 
     /**

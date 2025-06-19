@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute; // <-- PASTIKAN IMPORT INI ADA
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'saldo',
+        'is_active'
     ];
 
     /**
@@ -42,7 +44,27 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'saldo' => 'decimal:2'
     ];
+
+    /**
+     * --- PERBAIKAN UTAMA: Tambahkan ini ke model Anda ---
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['first_name'];
+
+    /**
+     * --- PERBAIKAN UTAMA: Buat accessor untuk 'first_name' ---
+     * Get the user's first name.
+     */
+    protected function firstName(): Attribute
+    {
+        return Attribute::make(
+            get: fn (mixed $value, array $attributes) => explode(' ', $attributes['nama'])[0],
+        );
+    }
     
     /**
      * Mendefinisikan relasi ke tabel 'transactions'

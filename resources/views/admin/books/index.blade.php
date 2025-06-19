@@ -28,7 +28,6 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penulis</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
-                                {{-- KOLOM BARU UNTUK RATING --}}
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
                                 <th class="relative px-6 py-3"></th>
                             </tr>
@@ -38,13 +37,15 @@
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($book->cover)
-                                            <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover" class="h-16 w-12 object-cover">
+                                            {{-- PERBAIKAN FINAL: Path yang benar untuk file yang disimpan di storage --}}
+                                            <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover Buku" class="h-16 w-12 object-cover rounded shadow">
+                                        @else
+                                            <div class="h-16 w-12 flex items-center justify-center bg-gray-200 rounded text-xs text-gray-500">No Image</div>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $book->title }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $book->author }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $book->penulis }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $book->category->name ?? 'N/A' }}</td>
-                                    {{-- SEL BARU UNTUK MENAMPILKAN DATA RATING --}}
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <svg class="w-4 h-4 text-yellow-400 me-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
@@ -64,7 +65,6 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    {{-- Ubah colspan menjadi 6 karena ada tambahan kolom --}}
                                     <td colspan="6" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
                                         Belum ada buku.
                                     </td>
@@ -72,7 +72,6 @@
                             @endforelse
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
