@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TransactionController;
 use App\Http\Controllers\Admin\TopUpController;
-use App\Http\Controllers\Api\DashboardStatsController; // <-- TAMBAHKAN INI
+use App\Http\Controllers\Api\DashboardStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,20 +15,23 @@ use App\Http\Controllers\Api\DashboardStatsController; // <-- TAMBAHKAN INI
 |--------------------------------------------------------------------------
 */
 
+// Rute Halaman Depan, akan langsung dialihkan ke halaman login admin
 Route::get('/', function () {
-    return redirect('/login');
+    return redirect()->route('login');
 });
 
 // ======================================================================
 // GRUP RUTE UNTUK ADMIN
+// Semua rute di dalam grup ini aman dan hanya bisa diakses oleh admin yang sudah login.
 // ======================================================================
 Route::middleware(['auth', 'admin'])->group(function () {
     
+    // PERBAIKAN: Middleware 'verified' dihapus dari sini untuk menghilangkan redirect loop.
     Route::get('/admin/dashboard', function () {
         return view('dashboard');
     })->name('admin.dashboard');
 
-    // Rute CRUD
+    // Rute untuk CRUD
     Route::resource('/admin/categories', CategoryController::class);
     Route::resource('/admin/books', BookController::class);
     Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
@@ -45,6 +48,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 // ======================================================================
 // GRUP RUTE BAWAAN BREEZE
+// Untuk halaman profil admin yang sedang login.
 // ======================================================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -52,4 +56,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+// File ini berisi semua rute untuk proses otentikasi (halaman login, proses logout, dll)
 require __DIR__.'/auth.php';
