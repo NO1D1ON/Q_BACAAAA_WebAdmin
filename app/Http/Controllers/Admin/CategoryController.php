@@ -47,7 +47,7 @@ class CategoryController extends Controller
         // Buat kategori baru dengan data yang sudah disiapkan
         Category::create($categoryData);
 
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function edit(Category $category)
@@ -83,7 +83,7 @@ class CategoryController extends Controller
 
         $category->update($categoryData);
 
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /**
@@ -100,6 +100,6 @@ class CategoryController extends Controller
         // Hapus record kategori dari database
         $category->delete();
 
-        return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }

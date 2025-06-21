@@ -26,6 +26,10 @@ class Category extends Model
      */
     public function books()
     {
-        return $this->hasMany(Book::class);
+        // Argumen kedua ('category_id') adalah nama foreign key di tabel 'books'.
+        // Argumen ketiga ('id') adalah nama primary key di tabel 'categories'.
+        // Ini adalah pengaturan default, tapi menuliskannya secara eksplisit lebih aman.
+        return $this->hasMany(Book::class, 'category_id', 'id');
     }
+
 }

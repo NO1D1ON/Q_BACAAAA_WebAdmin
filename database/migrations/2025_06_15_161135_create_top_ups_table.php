@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('status')->default('pending'); // cth: pending, success, failed
             $table->timestamp('waktu_permintaan_topup')->useCurrent();
             $table->timestamp('waktu_validasi_topup')->nullable();
+            // $table->timestamps(); 
         });
     }
 
