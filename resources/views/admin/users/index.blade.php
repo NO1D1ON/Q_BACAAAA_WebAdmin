@@ -19,20 +19,20 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="relative px-6 py-3"></th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="relative px-6 py-3 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($users as $user)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $user->nama }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $user->email }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($user->saldo, 0, ',', '.') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">{{ $user->nama }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">{{ $user->email }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">Rp {{ number_format($user->saldo, 0, ',', '.') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
                                         @if($user->is_active)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                 Aktif
@@ -43,7 +43,7 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <form action="{{ route('admin.users.toggleStatus', $user->id) }}" method="POST" class="inline">
                                             @csrf
                                             @method('PATCH')

@@ -11,7 +11,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     {{-- Form ini akan mengirim data ke fungsi 'update' di BookController --}}
-                    <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('admin.books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         {{-- Method PUT/PATCH wajib untuk proses update di Laravel --}}
                         @method('PUT')
@@ -94,7 +94,7 @@
                         </div>
 
                         <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('books.index') }}" class="text-gray-600 hover:text-gray-900 mr-4">Batal</a>
+                            <a href="{{ route('admin.books.index') }}" class="text-gray-600 hover:text-gray-900 mr-4">Batal</a>
                             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Update Buku
                             </button>

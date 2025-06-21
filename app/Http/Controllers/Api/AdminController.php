@@ -43,7 +43,7 @@ class AdminController extends Controller
             $top_up->save();
         });
 
-        return response()->json(['message' => 'Top-up berhasil disetujui.', 'data' => $top_up]);
+        return redirect()->route('api.admin.topups.index')->with('success', 'Top up berhasil disetujui.');
     }
 
     /**
@@ -55,6 +55,6 @@ class AdminController extends Controller
         $top_up->waktu_validasi_topup = now();
         $top_up->save();
 
-        return response()->json(['message' => 'Top-up berhasil ditolak.', 'data' => $top_up]);
+        return redirect()->route('api.admin.topups.index')->with('success', 'Top up berhasil ditolak.');
     }
 }

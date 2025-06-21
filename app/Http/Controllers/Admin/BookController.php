@@ -64,7 +64,7 @@ class BookController extends Controller
 
         Book::create($bookData);
 
-        return redirect()->route('books.index')->with('success', 'Buku berhasil ditambahkan.');
+        return redirect()->route('admin.books.index')->with('success', 'Buku berhasil ditambahkan.');
     }
 
     /**
@@ -124,7 +124,7 @@ class BookController extends Controller
 
         $book->update($bookData);
 
-        return redirect()->route('books.index')->with('success', 'Data buku berhasil diperbarui.');
+        return redirect()->route('admin.books.index')->with('success', 'Data buku berhasil diperbarui.');
     }
 
     /**
@@ -143,6 +143,6 @@ class BookController extends Controller
 
         $book->delete();
 
-        return redirect()->route('books.index')->with('success', 'Buku berhasil dihapus.');
+        return redirect()->route('admin.books.index')->with('success', 'Buku berhasil dihapus.');
     }
 }

@@ -12,20 +12,20 @@ class Category extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
-    protected $fillable = [
-        'name',
-        'slug',
-        'image_path',
-    ];
+    protected $fillable = ['name', 'slug', 'image_path'];
+
 
     /**
-     * Mendefinisikan relasi ke tabel 'books'
-     * Satu Category bisa memiliki banyak Book
+     * [PERBAIKAN UTAMA] Pastikan fungsi ini ada dan benar.
+     * Mendefinisikan relasi "satu ke banyak" (One to Many).
+     * Satu Kategori bisa memiliki banyak Buku.
      */
     public function books()
     {
-        return $this->hasMany(Book::class);
+        // Perintah ini akan mencari semua model Book
+        // yang memiliki 'category_id' sama dengan 'id' dari kategori ini.
+        return $this->hasMany(Book::class, 'category_id', 'id');
     }
 }

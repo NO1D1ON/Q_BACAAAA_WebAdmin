@@ -15,40 +15,42 @@ use App\Http\Controllers\Api\DashboardStatsController;
 |--------------------------------------------------------------------------
 */
 
-// Rute Halaman Depan, akan langsung dialihkan ke halaman login admin
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
 // ======================================================================
 // GRUP RUTE UNTUK ADMIN
-// Semua rute di dalam grup ini aman dan hanya bisa diakses oleh admin yang sudah login.
+// [PERBAIKAN] Prefix '/admin' dan nama 'admin.' diletakkan di grup
+// agar semua rute di dalamnya otomatis mewarisi.
 // ======================================================================
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
     
-    // PERBAIKAN: Middleware 'verified' dihapus dari sini untuk menghilangkan redirect loop.
-    Route::get('/admin/dashboard', function () {
+    Route::get('/dashboard', function () {
         return view('dashboard');
-    })->name('admin.dashboard');
+    })->name('dashboard');
 
-    // Rute untuk CRUD
-    Route::resource('/admin/categories', CategoryController::class);
-    Route::resource('/admin/books', BookController::class);
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
-    Route::patch('/admin/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggleStatus');
-    Route::get('/admin/transactions', [TransactionController::class, 'index'])->name('admin.transactions.index');
-    Route::get('/admin/topups', [TopUpController::class, 'index'])->name('admin.topups.index');
-    Route::patch('/admin/topups/{top_up}/approve', [TopUpController::class, 'approve'])->name('admin.topups.approve');
-    Route::patch('/admin/topups/{top_up}/reject', [TopUpController::class, 'reject'])->name('admin.topups.reject');
+    // Rute untuk CRUD. URL-nya akan otomatis menjadi /admin/categories, /admin/books, dst.
+    Route::resource('categories', CategoryController::class);
+    Route::resource('books', BookController::class);
+    
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+    
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    
+    // Rute untuk Top Up. Nama rutenya sekarang menjadi 'admin.topups.index', 'admin.topups.approve', dst.
+    Route::get('/topups', [TopUpController::class, 'index'])->name('topups.index');
+    Route::patch('/topups/{top_up}/approve', [TopUpController::class, 'approve'])->name('topups.approve');
+    Route::patch('/topups/{top_up}/reject', [TopUpController::class, 'reject'])->name('topups.reject');
 
-    // RUTE API UNTUK DASHBOARD
-    Route::get('/admin/api/dashboard-stats', [DashboardStatsController::class, 'index'])->name('admin.api.dashboardStats');
+    // Rute ini seharusnya berada di api.php, tapi kita biarkan dulu agar tidak error
+    Route::get('/api/dashboard-stats', [DashboardStatsController::class, 'index'])->name('api.dashboardStats');
 });
 
 
 // ======================================================================
 // GRUP RUTE BAWAAN BREEZE
-// Untuk halaman profil admin yang sedang login.
 // ======================================================================
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -56,6 +58,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-// File ini berisi semua rute untuk proses otentikasi (halaman login, proses logout, dll)
 require __DIR__.'/auth.php';

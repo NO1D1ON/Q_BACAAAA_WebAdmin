@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-end mb-4">
-                        <a href="{{ route('books.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <a href="{{ route('admin.books.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                             Tambah Buku
                         </a>
                     </div>
@@ -29,15 +29,17 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Penulis</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
-                                <th class="relative px-6 py-3"></th>
+                                {{-- [PERBAIKAN #1] Tambahkan header untuk kolom Aksi --}}
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider align-middle">Aksi</th>
+
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             @forelse ($books as $book)
-                                <tr>
+                                {{-- [PERBAIKAN #2] Bungkus baris dengan x-data untuk modal --}}
+                                <tr x-data="{ openModal: false }">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($book->cover)
-                                            {{-- PERBAIKAN FINAL: Path yang benar untuk file yang disimpan di storage --}}
                                             <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover Buku" class="h-16 w-12 object-cover rounded shadow">
                                         @else
                                             <div class="h-16 w-12 flex items-center justify-center bg-gray-200 rounded text-xs text-gray-500">No Image</div>
@@ -55,12 +57,32 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('books.edit', $book->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
-                                        <form action="{{ route('books.destroy', $book->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="text-red-600 hover:text-red-900 ml-4" onclick="return confirm('Apakah Anda yakin?')">Hapus</button>
-                                        </form>
+                                        <a href="{{ route('admin.books.edit', $book->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                        
+                                        {{-- [PERBAIKAN #3] Ganti tombol hapus untuk memicu modal --}}
+                                        <button @click="openModal = true" class="text-red-600 hover:text-red-900 ml-4">Hapus</button>
+
+                                        {{-- Modal Konfirmasi Penghapusan --}}
+                                        <div x-show="openModal" x-cloak 
+                                             class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50"
+                                             @click.away="openModal = false">
+                                            <div class="bg-white rounded-lg shadow-xl p-6 m-4 max-w-sm" @click.stop>
+                                                <h3 class="text-lg font-bold text-gray-900 text-left">Konfirmasi Penghapusan</h3>
+                                                <p class="mt-2 text-sm text-gray-600 text-left">Anda yakin ingin menghapus buku ini?</p>
+                                                <div class="mt-4 flex justify-end space-x-2">
+                                                    <button @click="openModal = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                                        Batal
+                                                    </button>
+                                                    <form action="{{ route('admin.books.destroy', $book->id) }}" method="POST" class="inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+                                                            Ya, Hapus
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -72,6 +94,7 @@
                             @endforelse
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>

@@ -99,6 +99,6 @@ class User extends Authenticatable
      */
     public function purchasedBooks()
     {
-        return $this->belongsToMany(Book::class, 'book_user', 'user_id', 'book_id')->withPivot('waktu_beli');
+        return $this->belongsToMany(Book::class, 'book_user', 'user_id', 'book_id');
     }
 }
