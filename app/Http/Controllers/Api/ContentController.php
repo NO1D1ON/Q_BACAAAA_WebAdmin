@@ -165,6 +165,7 @@ class ContentController extends Controller
 
         // Berkat Route Model Binding, Laravel otomatis mencari kategori berdasarkan ID.
         // Kita lalu mengambil semua buku yang terhubung dengan kategori tersebut.
+        // dd($category->books()->toSql());
         $books = $category->books()->get();
 
         return response()->json(['data' => $books]);

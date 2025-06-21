@@ -89,10 +89,9 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        // Berkat Sanctum, $request->user() akan secara otomatis
-        // berisi data lengkap dari pengguna yang token-nya dikirim oleh Flutter.
+        // [PERBAIKAN] Gunakan Auth::guard('sanctum') untuk konsistensi
         return response()->json([
-            'data' => $request->user()
+            'data' => Auth::guard('sanctum')->user()
         ]);
     }
 

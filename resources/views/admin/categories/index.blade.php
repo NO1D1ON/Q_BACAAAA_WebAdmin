@@ -40,13 +40,15 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-center">{{ $loop->iteration }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">{{ $category->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap align-middle text-center">{{ $category->slug }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center align-middle">
                                         @if($category->image_path)
-                                            <img src="{{ asset('storage/' . $category->image_path) }}" alt="{{ $category->name }}" class="h-10 w-16 object-cover rounded">
+                                            <img src="{{ asset('storage/' . $category->image_path) }}" alt="{{ $category->name }}"
+                                                class="h-10 w-16 object-cover rounded inline-block">
                                         @else
                                             <span class="text-xs text-gray-500">No Image</span>
                                         @endif
                                     </td>
+
                                     <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <a href="{{ route('admin.categories.edit', $category->id) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                         

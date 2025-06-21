@@ -4,24 +4,26 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Notification; // Pastikan import ini ada
+use App\Models\Notification;
+use Illuminate\Support\Facades\Auth; // <-- Tambahkan import Auth
 
 class NotificationController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
+        // [PERBAIKAN UTAMA] Ambil user yang login melalui guard 'sanctum'
+        $user = Auth::guard('sanctum')->user();
 
-        // [PENGAMAN TAMBAHAN] Cek jika user tidak ditemukan
+        // Cek jika tidak ada user yang terotentikasi dengan token yang diberikan
         if (!$user) {
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
-        
-        // Ambil notifikasi berdasarkan ID user yang sedang login
+
+        // Jika user ditemukan, ambil notifikasinya
         $notifications = Notification::where('user_id', $user->id)
-                                    ->latest()
+                                    ->latest() 
                                     ->get();
-        
+
         return response()->json([
             'data' => $notifications
         ]);

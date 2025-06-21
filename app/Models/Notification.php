@@ -9,12 +9,35 @@ class Notification extends Model
 {
     use HasFactory;
 
-    // Definisikan kolom yang boleh diisi
+    /**
+     * [PERBAIKAN UTAMA] Tambahkan properti $fillable.
+     * Ini adalah "izin" yang memberitahu Laravel bahwa kolom-kolom
+     * berikut aman untuk diisi secara massal menggunakan metode ::create().
+     * Tanpa ini, tidak ada notifikasi yang akan pernah dibuat.
+     */
     protected $fillable = [
         'user_id',
+        'type',
         'title',
         'message',
-        'type',
         'is_read',
     ];
+
+    /**
+     * The attributes that should be cast to native types.
+     * Ini membantu memastikan 'is_read' selalu diperlakukan sebagai boolean (true/false).
+     *
+     * @var array
+     */
+    protected $casts = [
+        'is_read' => 'boolean',
+    ];
+
+    /**
+     * Mendefinisikan relasi ke model User.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
