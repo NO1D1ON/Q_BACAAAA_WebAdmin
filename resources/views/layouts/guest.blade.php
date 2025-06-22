@@ -1,3 +1,9 @@
+{{-- resources/views/layouts/guest.blade.php --}}
+
+@props([
+    'image' => asset('assets/637201.png') // <-- GAMBAR DEFAULT JIKA TIDAK ADA YANG DIKIRIM
+])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -12,7 +18,7 @@
         <link rel="icon" href="{{ asset('assets/slide1.png') }}" type="image/png">
 
         <!-- <link rel="stylesheet" href="{{ asset('css/custom-guest.css') }}"> -->
-
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.tailwindcss.com"></script>
     </head>
     {{-- Terapkan class background di sini --}}
@@ -27,9 +33,11 @@
             </div>
 
             <div class="hidden md:block md:w-1/2 p-4">
+                {{-- UBAH BAGIAN INI --}}
                 <div class="h-full w-full bg-no-repeat bg-center bg-contain" 
-                    style="background-image: url('{{ asset('assets/8637201.png') }}');">
+                    style="background-image: url('{{ $image }}');"> {{-- Gunakan variabel $image --}}
                 </div>
+                {{-- AKHIR DARI PERUBAHAN --}}
             </div>
 
 
