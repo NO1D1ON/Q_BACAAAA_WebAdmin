@@ -1,20 +1,21 @@
+{{-- 
+    Tidak ada perubahan baru di file ini.
+    File ini hanya berisi struktur HTML dari navigasi.
+    Logika show/hide saat scroll sudah ditangani oleh app.blade.php
+--}}
 <nav x-data="{ open: false }" class="bg-transparent">
     {{-- Kontainer utama yang memberi padding dan menempatkan navigasi di atas --}}
     <div class="p-4">
-        {{-- 
-            Navigasi utama dengan style "glassmorphism" HANYA PADA LAYAR LEBAR (lg).
-            Perhatikan penambahan prefix "lg:" pada class background, blur, shadow, dsb.
-        --}}
+        {{-- Navigasi utama dengan style "glassmorphism" HANYA PADA LAYAR LEBAR (lg) --}}
         <div class="relative max-w-7xl mx-auto lg:bg-white/70 lg:backdrop-blur-xl lg:rounded-xl lg:shadow-lg lg:ring-1 lg:ring-black/5">
             <div class="flex items-center justify-between h-20 px-6">
                 
-                {{-- Logo kini selalu tampil di semua ukuran layar untuk konsistensi --}}
-                <div class="flex flex-shrink-0">
+                {{-- Logo kini hanya tampil pada layar besar (lg ke atas) --}}
+                <div class="hidden lg:flex flex-shrink-0">
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-x-3">
-                        <div class="h-10 w-10 rounded-full overflow-hidden flex items-center justify-center bg-white">
+                        <div class="h-12 w-15 overflow-hidden flex items-center justify-center">
                             <img src="{{ asset('assets/slide1.png') }}" alt="Q Baca" class="h-full w-full object-cover">
                         </div>
-                        <span class="text-xl font-bold text-gray-800 hidden sm:inline">Q Baca</span>
                     </a>
                 </div>
 
@@ -103,7 +104,7 @@
                 </div>
 
                 {{-- Tombol hamburger - hanya tampil di layar kecil --}}
-                <div class="flex lg:hidden">
+                <div class="flex lg:hidden ml-auto">
                     <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none">
                         <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                             <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -116,7 +117,7 @@
         </div>
     </div>
 
-    {{-- Menu dropdown untuk hamburger - tidak ada perubahan di sini --}}
+    {{-- Menu dropdown untuk hamburger --}}
     <div :class="{'block': open, 'hidden': ! open}" class="hidden lg:hidden bg-white shadow-md rounded-b-lg mx-4">
         <div class="pt-2 pb-3 space-y-1 px-2">
             <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">

@@ -1,101 +1,118 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-2xl text-[#28738B] leading-tight">
             {{-- Menggunakan judul buku yang sedang diedit --}}
-            {{ __('Edit Buku: ') }} {{ $book->title }}
+            {{ __('Edit Buku: ') }} <span class="italic">{{ $book->title }}</span>
         </h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{-- Form ini akan mengirim data ke fungsi 'update' di BookController --}}
-                    <form action="{{ route('admin.books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
+                <div class="p-6 md:p-8 text-gray-900">
+                    <form action="{{ route('admin.books.update', $book->id) }}" method="POST" enctype="multipart/form-data"
+                          x-data="{ 
+                              {{-- Inisialisasi pratinjau dengan gambar yang sudah ada --}}
+                              coverPreview: '{{ $book->cover ? asset('storage/' . $book->cover) : null }}', 
+                              coverName: '',
+                              bookFileName: '' 
+                          }">
                         @csrf
-                        {{-- Method PUT/PATCH wajib untuk proses update di Laravel --}}
                         @method('PUT')
                         
-                        <!-- Judul -->
-                        <div class="mb-4">
-                            <label for="title" class="block font-medium text-sm text-gray-700">Judul</label>
-                            {{-- Mengisi nilai input dengan data lama --}}
-                            <input type="text" name="title" id="title" class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('title', $book->title) }}" required>
-                        </div>
-                        
-                        <!-- Penulis -->
-                        <div class="mb-4">
-                            <label for="author" class="block font-medium text-sm text-gray-700">Penulis</label>
-                             {{-- Mengisi nilai input dengan data lama --}}
-                            <input type="text" name="author" id="author" class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('author', $book->penulis) }}" required>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            
+                            {{-- KOLOM KIRI: DETAIL BUKU --}}
+                            <div class="space-y-6">
+                                <div>
+                                    <label for="title" class="block font-medium text-sm text-gray-700">Judul</label>
+                                    <input type="text" name="title" id="title" class="mt-1 w-full py-2 px-4 rounded-md bg-gray-100 border-gray-300 focus:border-[#28738B] focus:ring focus:ring-[#28738B] focus:ring-opacity-50 transition" value="{{ old('title', $book->title) }}" required>
+                                </div>
+                                
+                                <div>
+                                    <label for="author" class="block font-medium text-sm text-gray-700">Penulis</label>
+                                    <input type="text" name="author" id="author" class="mt-1 w-full py-2 px-4 rounded-md bg-gray-100 border-gray-300 focus:border-[#28738B] focus:ring focus:ring-[#28738B] focus:ring-opacity-50 transition" value="{{ old('author', $book->author) }}" required>
+                                </div>
+
+                                <div>
+                                    <label for="category_id" class="block font-medium text-sm text-gray-700">Kategori</label>
+                                    <select name="category_id" id="category_id" class="mt-1 w-full py-2 px-4 rounded-md bg-gray-100 border-gray-300 focus:border-[#28738B] focus:ring focus:ring-[#28738B] focus:ring-opacity-50 transition" required>
+                                        <option value="">Pilih Kategori</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}" @selected(old('category_id', $book->category_id) == $category->id)>
+                                                {{ $category->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="price" class="block font-medium text-sm text-gray-700">Harga</label>
+                                        <input type="number" name="price" id="price" min="0" class="mt-1 w-full py-2 px-4 rounded-md bg-gray-100 border-gray-300 focus:border-[#28738B] focus:ring focus:ring-[#28738B] focus:ring-opacity-50 transition" value="{{ old('price', $book->price) }}" required>
+                                    </div>
+                                    <div>
+                                        <label for="rating" class="block font-medium text-sm text-gray-700">Rating</label>
+                                        <input type="number" name="rating" id="rating" step="0.1" min="0" max="5" class="mt-1 w-full py-2 px-4 rounded-md bg-gray-100 border-gray-300 focus:border-[#28738B] focus:ring focus:ring-[#28738B] focus:ring-opacity-50 transition" value="{{ old('rating', $book->rating) }}">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="description" class="block font-medium text-sm text-gray-700">Deskripsi</label>
+                                    <textarea name="description" id="description" rows="5" class="mt-1 w-full py-2 px-4 rounded-md bg-gray-100 border-gray-300 focus:border-[#28738B] focus:ring focus:ring-[#28738B] focus:ring-opacity-50 transition">{{ old('description', $book->description) }}</textarea>
+                                </div>
+                            </div>
+
+                            {{-- KOLOM KANAN: FILE UPLOADS --}}
+                            <div class="space-y-6">
+                                {{-- Pratinjau Gambar Cover --}}
+                                <div>
+                                    <label class="block font-medium text-sm text-gray-700">Pratinjau Cover</label>
+                                    <div class="mt-1 w-full h-48 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+                                        <template x-if="coverPreview">
+                                            <img :src="coverPreview" alt="Cover Preview" class="w-full h-full object-cover">
+                                        </template>
+                                        <template x-if="!coverPreview">
+                                            <div class="text-center p-4">
+                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                                <p class="mt-2 text-sm text-gray-500">Pratinjau cover akan muncul di sini</p>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                                
+                                {{-- Input Ganti Gambar Cover --}}
+                                <div>
+                                    <label for="cover" class="block font-medium text-sm text-gray-700">Ganti Gambar Cover (Opsional)</label>
+                                    <div class="mt-1">
+                                        <input id="cover" name="cover" type="file" class="hidden"
+                                               @change="let file = $event.target.files[0]; if (file) { coverName = file.name; let reader = new FileReader(); reader.onload = (e) => { coverPreview = e.target.result }; reader.readAsDataURL(file); }">
+                                        <div class="flex items-center">
+                                            <label for="cover" class="cursor-pointer bg-[#2d3748] text-white font-semibold py-2 px-4 rounded-l-md hover:bg-[#1a202c] transition whitespace-nowrap">Pilih File</label>
+                                            <div class="flex-1 p-2 border border-l-0 border-gray-300 rounded-r-md bg-white truncate"><span x-text="coverName || 'Tidak ada file yang dipilih'" class="text-sm text-gray-500"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {{-- Input Ganti File E-book --}}
+                                <div>
+                                    <label for="file_path" class="block font-medium text-sm text-gray-700">Ganti File E-book (Opsional)</label>
+                                    <p class="text-xs text-gray-500 mt-1">File saat ini: <span class="font-medium text-indigo-600">{{ $book->file_path ? basename($book->file_path) : 'Tidak ada' }}</span></p>
+                                    <div class="mt-1">
+                                        <input id="file_path" name="file_path" type="file" class="hidden" @change="bookFileName = $event.target.files[0] ? $event.target.files[0].name : ''">
+                                        <div class="flex items-center">
+                                            <label for="file_path" class="cursor-pointer bg-[#2d3748] text-white font-semibold py-2 px-4 rounded-l-md hover:bg-[#1a202c] transition whitespace-nowrap">Pilih File</label>
+                                            <div class="flex-1 p-2 border border-l-0 border-gray-300 rounded-r-md bg-white truncate"><span x-text="bookFileName || 'Tidak ada file yang dipilih'" class="text-sm text-gray-500"></span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Kategori -->
-                        <div class="mb-4">
-                            <label for="category_id" class="block font-medium text-sm text-gray-700">Kategori</label>
-                            <select name="category_id" id="category_id" class="block mt-1 w-full rounded-md shadow-sm" required>
-                                @foreach ($categories as $category)
-                                    {{-- Memilih kategori yang sesuai dengan data lama --}}
-                                    <option value="{{ $category->id }}" @if($category->id == old('category_id', $book->category_id)) selected @endif>
-                                        {{ $category->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        
-                        <!-- Harga -->
-                        <div class="mb-4">
-                            <label for="price" class="block font-medium text-sm text-gray-700">Harga</label>
-                            <input type="number" name="price" id="price" class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('price', $book->harga) }}" required>
-                        </div>
-                        
-                        <!-- Rating -->
-                        <div class="mb-4">
-                            <label for="rating" class="block font-medium text-sm text-gray-700">Rating</label>
-                            <input type="number" name="rating" id="rating" step="0.1" min="0" max="5" class="block mt-1 w-full rounded-md shadow-sm" value="{{ old('rating', $book->rating) }}">
-                        </div>
-
-                        <!-- Deskripsi -->
-                        <div class="mb-4">
-                            <label for="description" class="block font-medium text-sm text-gray-700">Deskripsi</label>
-                            <textarea name="description" id="description" rows="4" class="block mt-1 w-full rounded-md shadow-sm">{{ old('description', $book->deskripsi) }}</textarea>
-                        </div>
-                        
-                        <!-- Gambar Cover Saat Ini -->
-                        <div class="mb-4">
-                            <label class="block font-medium text-sm text-gray-700">Cover Saat Ini</label>
-                            @if($book->cover)
-                                <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover" class="h-40 mt-2 rounded">
-                            @else
-                                <p class="mt-2 text-gray-500">Tidak ada gambar cover.</p>
-                            @endif
-                        </div>
-                        
-                        <!-- Ganti Gambar Cover -->
-                        <div class="mb-4">
-                            <label for="cover" class="block font-medium text-sm text-gray-700">Ganti Gambar Cover (Opsional)</label>
-                            <input type="file" name="cover" id="cover" class="block mt-1 w-full">
-                        </div>
-
-                        <!-- File E-book Saat Ini -->
-                        <div class="mb-4">
-                            <label class="block font-medium text-sm text-gray-700">File E-book Saat Ini</label>
-                             @if($book->file_path)
-                                <p class="mt-2 text-indigo-600">{{ $book->file_path }}</p>
-                            @else
-                                <p class="mt-2 text-gray-500">Tidak ada file e-book.</p>
-                            @endif
-                        </div>
-
-                        <!-- Ganti File E-book -->
-                        <div class="mb-4">
-                            <label for="file_path" class="block font-medium text-sm text-gray-700">Ganti File E-book (Opsional)</label>
-                            <input type="file" name="file_path" id="file_path" class="block mt-1 w-full">
-                        </div>
-
-                        <div class="flex items-center justify-end mt-4">
-                            <a href="{{ route('admin.books.index') }}" class="text-gray-600 hover:text-gray-900 mr-4">Batal</a>
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        {{-- Tombol Aksi --}}
+                        <div class="flex items-center justify-end mt-8 border-t pt-6">
+                            <a href="{{ route('admin.books.index') }}" class="text-gray-600 hover:text-gray-800 mr-4">Batal</a>
+                            <button type="submit" class="inline-flex items-center px-6 py-2 bg-[#28738B] border border-transparent rounded-md font-semibold text-white hover:bg-[#1f5a6d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#28738B] transition">
                                 Update Buku
                             </button>
                         </div>
@@ -104,4 +121,17 @@
             </div>
         </div>
     </div>
+
+    {{-- Script Notifikasi SweetAlert --}}
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() { Swal.fire({ icon: 'success', title: 'Berhasil!', text: '{{ session('success') }}', position: 'center', showConfirmButton: false, timer: 2500 }); });
+        </script>
+    @endif
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function() { Swal.fire({ icon: 'error', title: 'Gagal!', text: '{{ $errors->first() }}', position: 'center', showConfirmButton: false, timer: 3500 }); });
+        </script>
+    @endif
+
 </x-app-layout>
