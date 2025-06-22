@@ -5,11 +5,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>'QBaca'</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+
+         <link rel="stylesheet" href="{{ asset('css/admin-nav.css') }}">
+        <link rel="icon" href="{{ asset('assets/slide1.png') }}" type="image/png">
 
         <!-- Scripts -->
         <script src="https://cdn.tailwindcss.com"></script>
