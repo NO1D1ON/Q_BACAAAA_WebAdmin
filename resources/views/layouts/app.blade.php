@@ -20,10 +20,21 @@
         
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+        <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                background: linear-gradient(to bottom, #E6FADD, #28738B);
+                background-attachment: fixed;
+                background-repeat: no-repeat;
+                background-size: cover;
+            }
+        </style>
+
         {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen">
             
             {{-- Logika animasi scroll dengan Alpine.js (Tidak berubah) --}}
             <div 
@@ -65,6 +76,5 @@
             (seperti create.blade.php atau edit.blade.php) untuk mencegah
             notifikasi yang tidak diinginkan muncul di halaman yang salah.
         --}}
-
     </body>
 </html>
