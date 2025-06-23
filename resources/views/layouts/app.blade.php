@@ -50,7 +50,7 @@
                 </header>
             @endif
             
-            <main class="min-h-screen bg-gradient-to-b" style="background-image: linear-gradient(to bottom, #E6FADD, #28738B);">
+            <main class="min-h-full bg-gradient-to-b" style="background-image: linear-gradient(to bottom, #E6FADD, #28738B);">
                 {{-- Padding atas untuk memberi ruang bagi navigasi yang fixed --}}
                 <div class="{{ isset($header) ? '' : 'pt-32' }}"> 
                     {{ $slot }}
