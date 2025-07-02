@@ -11,6 +11,9 @@ use App\Http\Controllers\Api\PurchaseController;
 use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\CollectionController; 
 use App\Http\Controllers\Api\TopUpController;
+use App\Http\Controllers\Api\TransactionController;
+use App\Http\Controllers\Api\CategoryController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,6 +35,9 @@ Route::prefix('books')->group(function () {
 Route::get('/categories', [ContentController::class, 'getCategories']);
 Route::get('/search', [ContentController::class, 'search']);
 Route::get('/categories/{category}/books', [ContentController::class, 'getBooksByCategory']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{slug}', [CategoryController::class, 'show']);
 
 // --- RUTE TERPROTEKSI (Wajib login/mengirim token) ---
 // [PERBAIKAN #2 - PENYEDERHANAAN] Gabungkan semua rute pengguna yang terproteksi ke dalam satu grup
@@ -60,4 +66,5 @@ Route::middleware('auth:sanctum')->prefix('admin')->name('api.admin.')->group(fu
     Route::get('/topups', [TopUpController::class, 'index'])->name('topups.index');
     Route::patch('/topups/{top_up}/approve', [TopUpController::class, 'approve'])->name('topups.approve');
     Route::patch('/topups/{top_up}/reject', [TopUpController::class, 'reject'])->name('topups.reject');
+    Route::get('/v1/transactions', [TransactionController::class, 'history'])->name('api.transactions.history');
 });
