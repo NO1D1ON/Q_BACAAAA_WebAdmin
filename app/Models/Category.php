@@ -16,16 +16,8 @@ class Category extends Model
      */
     protected $fillable = ['name', 'slug', 'image_path'];
 
-
-    /**
-     * [PERBAIKAN UTAMA] Pastikan fungsi ini ada dan benar.
-     * Mendefinisikan relasi "satu ke banyak" (One to Many).
-     * Satu Kategori bisa memiliki banyak Buku.
-     */
     public function books()
     {
-        // Perintah ini akan mencari semua model Book
-        // yang memiliki 'category_id' sama dengan 'id' dari kategori ini.
-        return $this->hasMany(Book::class, 'category_id', 'id');
+        return $this->hasMany(Book::class);
     }
 }

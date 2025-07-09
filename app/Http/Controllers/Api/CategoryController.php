@@ -1,78 +1,60 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {
-    // ... (fungsi index() dan create() tetap sama) ...
-    public function index() { /* ... */ }
-    public function create() { /* ... */ }
-
-    public function store(Request $request)
+    /**
+     * Mengirimkan daftar semua kategori.
+     * Endpoint ini akan dipanggil oleh halaman utama Flutter.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index(): JsonResponse
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
-            // Tambahkan validasi untuk gambar
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $categoryData = [
-            'name' => $validatedData['name'],
-            'slug' => Str::slug($validatedData['name']),
-        ];
-
-        // Jika ada file gambar yang di-upload, proses dan simpan path-nya
-        if ($request->hasFile('image')) {
-            $categoryData['image_path'] = $request->file('image')->store('category_images', 'public');
+        try {
+            $categories = Category::orderBy('name', 'asc')->get();
+            return response()->json([
+                'success' => true,
+                'message' => 'Daftar kategori berhasil diambil.',
+                'data'    => $categories
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil data kategori: ' . $e->getMessage(),
+            ], 500);
         }
-
-        Category::create($categoryData);
-
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil ditambahkan.');
-    }
-    
-    // ... (fungsi edit() tetap sama) ...
-    public function edit(Category $category) { /* ... */ }
-
-    public function update(Request $request, Category $category)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $categoryData = [
-            'name' => $validatedData['name'],
-            'slug' => Str::slug($validatedData['name']),
-        ];
-
-        if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
-            if ($category->image_path) {
-                Storage::disk('public')->delete($category->image_path);
-            }
-            // Simpan gambar baru
-            $categoryData['image_path'] = $request->file('image')->store('category_images', 'public');
-        }
-
-        $category->update($categoryData);
-
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
-    public function destroy(Category $category)
+    /**
+     * Mengirimkan detail satu kategori beserta semua buku di dalamnya.
+     * Endpoint ini dipanggil saat user memilih salah satu kategori.
+     * @param  string  $slug
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($slug): JsonResponse
     {
-        // Hapus juga gambar dari storage saat kategori dihapus
-        if ($category->image_path) {
-            Storage::disk('public')->delete($category->image_path);
+        try {
+            $category = Category::with('books')->where('slug', $slug)->firstOrFail();
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail kategori dan buku berhasil diambil.',
+                'data'    => $category
+            ], 200);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategori tidak ditemukan.',
+            ], 404);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server: ' . $e->getMessage(),
+            ], 500);
         }
-        $category->delete();
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }
